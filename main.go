@@ -17,8 +17,11 @@ func main() {
 		panic(err)
 	}
 
-	res := api.ParsePaths(swagger.Paths)
+	servers := api.ParseServers(swagger.Servers)
+	apis := api.ParsePaths(swagger.Paths)
 
-	j, _ := json.Marshal(res)
-	fmt.Print(string(j))
+	serversJSON, _ := json.Marshal(servers)
+	apisJSON, _ := json.Marshal(apis)
+	fmt.Println(string(serversJSON))
+	fmt.Println(string(apisJSON))
 }
