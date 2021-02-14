@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	openapi3 "github.com/getkin/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/ytakahashi/api-builder/api"
+	"github.com/ytakahashi/api-builder/internal"
 )
 
 func main() {
@@ -24,4 +25,8 @@ func main() {
 	apisJSON, _ := json.Marshal(apis)
 	fmt.Println(string(serversJSON))
 	fmt.Println(string(apisJSON))
+	fmt.Println()
+
+	selected := internal.Search(apis)
+	fmt.Println("Selected: ", selected.ToText())
 }

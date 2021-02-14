@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
@@ -35,6 +37,27 @@ type API struct {
 	OperationID string
 	Description string
 	Parameters  []Parameter
+}
+
+// ToText returns text which represents an api.
+func (api *API) ToText() string {
+	return fmt.Sprintf("%s %s (%s)", api.Method, api.Path, api.OperationID)
+}
+
+// ToText returns text which represents an api.
+func (parameter *Parameter) ToText() string {
+	txt := fmt.Sprintf("%s: %s", parameter.In, parameter.Name)
+	if parameter.ParameterFormat != "" {
+		txt += fmt.Sprintf("format: %s", parameter.ParameterFormat)
+	}
+	if parameter.ParameterPattern != "" {
+		txt += fmt.Sprintf("pattern: %s", parameter.ParameterPattern)
+	}
+	if parameter.Required {
+		txt += " (required)"
+	}
+
+	return txt
 }
 
 // ParseServers parses openapi3.Servers model to a slice of API model defined in this package.
