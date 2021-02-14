@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/getkin/kin-openapi/openapi3"
@@ -46,18 +47,21 @@ func (api *API) ToText() string {
 
 // ToText returns text which represents an api.
 func (parameter *Parameter) ToText() string {
-	txt := fmt.Sprintf("%s: %s", parameter.In, parameter.Name)
+	var buffer bytes.Buffer
+	buffer.WriteString(fmt.Sprintf("%s: %s", parameter.In, parameter.Name))
+	if parameter.Required {
+		buffer.WriteString(" (required)")
+	}
+	if parameter.ParameterType != "" {
+		buffer.WriteString(fmt.Sprintf("\n  - type: %s", parameter.ParameterType))
+	}
 	if parameter.ParameterFormat != "" {
-		txt += fmt.Sprintf("format: %s", parameter.ParameterFormat)
+		buffer.WriteString(fmt.Sprintf("\n  - format: %s", parameter.ParameterFormat))
 	}
 	if parameter.ParameterPattern != "" {
-		txt += fmt.Sprintf("pattern: %s", parameter.ParameterPattern)
+		buffer.WriteString(fmt.Sprintf("\n  - pattern: `%s`", parameter.ParameterPattern))
 	}
-	if parameter.Required {
-		txt += " (required)"
-	}
-
-	return txt
+	return buffer.String()
 }
 
 // ParseServers parses openapi3.Servers model to a slice of API model defined in this package.
