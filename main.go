@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/ytakahashi/api-builder/api"
-	"github.com/ytakahashi/api-builder/internal"
+	"github.com/ytakahashi/burl/api"
+	"github.com/ytakahashi/burl/internal"
 )
 
 func main() {

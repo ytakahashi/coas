@@ -7,7 +7,7 @@ import (
 
 	text "github.com/MichaelMure/go-term-text"
 	"github.com/ktr0731/go-fuzzyfinder"
-	"github.com/ytakahashi/api-builder/api"
+	"github.com/ytakahashi/burl/api"
 )
 
 // Search returns an api in a given array.
