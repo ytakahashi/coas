@@ -45,6 +45,26 @@ func (api *API) ToText() string {
 	return fmt.Sprintf("%s %s (%s)", api.Method, api.Path, api.OperationID)
 }
 
+// GetPathParameters returns path parameters of an api.
+func (api *API) GetPathParameters() []Parameter {
+	return api.filterParameters("path")
+}
+
+// GetQueryParameters returns query parameters of an api.
+func (api *API) GetQueryParameters() []Parameter {
+	return api.filterParameters("query")
+}
+
+func (api *API) filterParameters(target string) []Parameter {
+	result := make([]Parameter, 0, 0)
+	for _, p := range api.Parameters {
+		if p.In == target {
+			result = append(result, p)
+		}
+	}
+	return result
+}
+
 // ToText returns text which represents an api.
 func (parameter *Parameter) ToText() string {
 	var buffer bytes.Buffer
