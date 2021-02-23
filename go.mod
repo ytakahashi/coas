@@ -1,4 +1,4 @@
-module github.com/ytakahashi/api-builder
+module github.com/ytakahashi/burl
 
 go 1.15
 
