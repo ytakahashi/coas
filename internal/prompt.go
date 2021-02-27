@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"errors"
 	"fmt"
+	"os"
 
 	"github.com/manifoldco/promptui"
 	"github.com/ytakahashi/burl/api"
@@ -11,35 +11,47 @@ import (
 // PromptUI is ui
 type PromptUI struct{}
 
-func (ui *PromptUI) readInput(parameter api.Parameter) string {
-	prompt := promptui.Prompt{
-		Label:    parameter.Name,
-		Validate: createValidator(parameter),
-	}
+type validatorFactory interface {
+	createTypeValidator(valueType string, isRequired bool) func(input string) error
+	createPatternValidator(pattern string, isRequired bool) func(input string) error
+}
 
-	result, err := prompt.Run()
+type inputValidator struct{}
+
+func (ui *PromptUI) readInput(parameter api.Parameter) (result string) {
+	var err error
+	if len(parameter.ParameterEnums) > 0 {
+		prompt := promptui.Select{
+			Label:  parameter.Name,
+			Items:  createSelectItems(parameter),
+			Stdout: &bellSkipper{},
+		}
+		_, result, err = prompt.Run()
+	} else {
+		prompt := promptui.Prompt{
+			Label:    parameter.Name,
+			Validate: createValidator(parameter, new(inputValidator)),
+		}
+		result, err = prompt.Run()
+	}
 	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		return ""
+		fmt.Printf("Failed to read input. %v\n", err)
+		os.Exit(1)
 	}
-
-	return result
+	return
 }
 
-func createValidator(parameter api.Parameter) func(input string) error {
-	if parameter.Required {
-		return requiredValueValidator
+// https://github.com/manifoldco/promptui/issues/49#issuecomment-573814976
+type bellSkipper struct{}
+
+func (bs *bellSkipper) Write(b []byte) (int, error) {
+	const charBell = 7
+	if len(b) == 1 && b[0] == charBell {
+		return 0, nil
 	}
-	return noopValidator
+	return os.Stderr.Write(b)
 }
 
-func noopValidator(input string) error {
-	return nil
-}
-
-func requiredValueValidator(input string) error {
-	if len(input) == 0 {
-		return errors.New("Parameter required")
-	}
-	return nil
+func (bs *bellSkipper) Close() error {
+	return os.Stderr.Close()
 }

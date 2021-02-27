@@ -29,6 +29,7 @@ type Parameter struct {
 	ParameterType    string
 	ParameterFormat  string
 	ParameterPattern string
+	ParameterEnums   []string
 }
 
 // API is an API.
@@ -80,6 +81,12 @@ func (parameter *Parameter) ToText() string {
 	}
 	if parameter.ParameterPattern != "" {
 		buffer.WriteString(fmt.Sprintf("\n  - pattern: `%s`", parameter.ParameterPattern))
+	}
+	if len(parameter.ParameterEnums) > 0 {
+		buffer.WriteString("\n  - enums:")
+		for _, e := range parameter.ParameterEnums {
+			buffer.WriteString(fmt.Sprintf("\n    - %s", e))
+		}
 	}
 	return buffer.String()
 }
@@ -156,6 +163,10 @@ func buildParameters(params openapi3.Parameters) []Parameter {
 }
 
 func newParameter(param openapi3.Parameter) Parameter {
+	enums := make([]string, 0, 0)
+	for _, e := range param.Schema.Value.Enum {
+		enums = append(enums, e.(string))
+	}
 	return Parameter{
 		Name:             param.Name,
 		In:               param.In,
@@ -163,5 +174,6 @@ func newParameter(param openapi3.Parameter) Parameter {
 		ParameterType:    param.Schema.Value.Type,
 		ParameterFormat:  param.Schema.Value.Format,
 		ParameterPattern: param.Schema.Value.Pattern,
+		ParameterEnums:   enums,
 	}
 }
