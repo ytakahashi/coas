@@ -53,7 +53,7 @@ func Test_Parameter_ToText_WithFormat(t *testing.T) {
 	}
 }
 
-func Test_Parameter_ToText_WithSchema(t *testing.T) {
+func Test_Parameter_ToText_WithSchemaPattern(t *testing.T) {
 	parameter := Parameter{
 		In:               "query",
 		Name:             "sampleKey",
@@ -64,6 +64,26 @@ func Test_Parameter_ToText_WithSchema(t *testing.T) {
 	expected := `query: sampleKey
   - type: string
   - pattern: ` + "`" + `^[0-9A-F]{9}$` + "`"
+	if actual != expected {
+		fmt.Println(actual)
+		fmt.Println(expected)
+		t.Error("Error")
+	}
+}
+
+func Test_Parameter_ToText_WithSchemaEnums(t *testing.T) {
+	parameter := Parameter{
+		In:             "query",
+		Name:           "sort",
+		ParameterType:  "string",
+		ParameterEnums: []string{"createdAt", "updatedAt"},
+	}
+	actual := parameter.ToText()
+	expected := `query: sort
+  - type: string
+  - enums:
+    - createdAt
+    - updatedAt`
 	if actual != expected {
 		fmt.Println(actual)
 		fmt.Println(expected)
