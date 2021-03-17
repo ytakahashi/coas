@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/manifoldco/promptui"
-	"github.com/ytakahashi/burl/api"
+	"github.com/ytakahashi/coas/api"
 )
 
 // PromptUI is ui

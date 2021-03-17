@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ytakahashi/burl/api"
+	"github.com/ytakahashi/coas/api"
 )
 
 func TestBuildPreviewText(t *testing.T) {

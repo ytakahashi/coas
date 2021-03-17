@@ -1,6 +1,6 @@
 package internal
 
-import "github.com/ytakahashi/burl/api"
+import "github.com/ytakahashi/coas/api"
 
 func createSelectItems(parameter api.Parameter) (items []string) {
 	if !parameter.Required {

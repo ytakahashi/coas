@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/ytakahashi/burl/api"
+	"github.com/ytakahashi/coas/api"
 )
 
 type mockedInputValidator struct {

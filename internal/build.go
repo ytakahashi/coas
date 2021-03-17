@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ytakahashi/burl/api"
+	"github.com/ytakahashi/coas/api"
 )
 
 // InputHandler handles user input
