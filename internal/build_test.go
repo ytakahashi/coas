@@ -3,29 +3,27 @@ package internal
 import (
 	"fmt"
 	"testing"
-
-	"github.com/ytakahashi/coas/api"
 )
 
 func TestBuildURL(t *testing.T) {
 	path := "/v1/myResources/{resourceId}"
-	param1 := api.Parameter{
+	param1 := Parameter{
 		In:       "path",
 		Name:     "resourceId",
 		Required: true,
 	}
-	param2 := api.Parameter{
+	param2 := Parameter{
 		In:       "query",
 		Name:     "sort",
 		Required: true,
 	}
 
-	api := api.API{
+	api := API{
 		Path:        path,
 		Method:      "GET",
 		OperationID: "getMyResource",
 		Description: "get my resource",
-		Parameters:  []api.Parameter{param1, param2},
+		Parameters:  []Parameter{param1, param2},
 	}
 
 	actual := BuildURL(api, new(mockedInputHandler))
@@ -39,7 +37,7 @@ func TestBuildURL(t *testing.T) {
 
 func TestReplacePathParam(t *testing.T) {
 	path := "/v1/myResources/{resourceId}"
-	param := api.Parameter{
+	param := Parameter{
 		In:       "path",
 		Name:     "resourceId",
 		Required: true,
@@ -57,7 +55,7 @@ func TestReplacePathParam(t *testing.T) {
 
 func TestAppendQueryStringForTheFirstQuery(t *testing.T) {
 	query := ""
-	param := api.Parameter{
+	param := Parameter{
 		In:       "query",
 		Name:     "sort",
 		Required: true,
@@ -75,7 +73,7 @@ func TestAppendQueryStringForTheFirstQuery(t *testing.T) {
 
 func TestAppendQueryStringForTheSecondQuery(t *testing.T) {
 	query := "sort=myId"
-	param := api.Parameter{
+	param := Parameter{
 		In:       "query",
 		Name:     "limit",
 		Required: true,
@@ -93,7 +91,7 @@ func TestAppendQueryStringForTheSecondQuery(t *testing.T) {
 
 func TestAppendQueryStringForOptionalQuery(t *testing.T) {
 	query := "sort=myId"
-	param := api.Parameter{
+	param := Parameter{
 		In:       "query",
 		Name:     "offset",
 		Required: false,
@@ -111,6 +109,6 @@ func TestAppendQueryStringForOptionalQuery(t *testing.T) {
 
 type mockedInputHandler struct{}
 
-func (mock *mockedInputHandler) readInput(parameter api.Parameter) string {
+func (mock *mockedInputHandler) readInput(parameter Parameter) string {
 	return "foo"
 }

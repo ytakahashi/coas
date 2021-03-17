@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/ytakahashi/coas/api"
 	"github.com/ytakahashi/coas/internal"
 )
 
@@ -16,7 +15,7 @@ func main() {
 		panic(err)
 	}
 
-	apis := api.ParsePaths(swagger.Paths)
+	apis := internal.ParsePaths(swagger.Paths)
 	selected := internal.SelectAPI(apis)
 	url := internal.BuildURL(selected, new(internal.PromptUI))
 	fmt.Println(url)

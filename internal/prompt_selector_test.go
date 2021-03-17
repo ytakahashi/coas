@@ -4,11 +4,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/ytakahashi/coas/api"
 )
 
 func TestCreateSelectItems_notEnums(t *testing.T) {
-	parameter := api.Parameter{
+	parameter := Parameter{
 		In:            "query",
 		Name:          "sort",
 		Required:      false,
@@ -21,7 +20,7 @@ func TestCreateSelectItems_notEnums(t *testing.T) {
 }
 
 func TestCreateSelectItems_requitedParameter(t *testing.T) {
-	parameter := api.Parameter{
+	parameter := Parameter{
 		In:             "query",
 		Name:           "sort",
 		Required:       true,
@@ -35,7 +34,7 @@ func TestCreateSelectItems_requitedParameter(t *testing.T) {
 }
 
 func TestCreateSelectItems_optionalParameter(t *testing.T) {
-	parameter := api.Parameter{
+	parameter := Parameter{
 		In:             "query",
 		Name:           "sort",
 		Required:       false,

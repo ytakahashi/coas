@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
-
-	"github.com/ytakahashi/coas/api"
 )
 
-func createValidator(parameter api.Parameter, factory validatorFactory) func(input string) error {
+func createValidator(parameter Parameter, factory validatorFactory) func(input string) error {
 	var validators = []func(input string) error{}
 	if parameter.ParameterType != "" {
 		typeValidator := factory.createTypeValidator(parameter.ParameterType, parameter.Required)

@@ -5,7 +5,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/ytakahashi/coas/api"
 )
 
 type mockedInputValidator struct {
@@ -27,7 +26,7 @@ func (v *mockedInputValidator) createPatternValidator(pattern string, isRequired
 }
 
 func TestCreateValidator_WithType(t *testing.T) {
-	parameter := api.Parameter{
+	parameter := Parameter{
 		In:               "path",
 		Name:             "id",
 		ParameterType:    "string",

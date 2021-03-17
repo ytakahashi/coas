@@ -1,8 +1,6 @@
 package internal
 
-import "github.com/ytakahashi/coas/api"
-
-func createSelectItems(parameter api.Parameter) []string {
+func createSelectItems(parameter Parameter) []string {
 	items := []string{}
 	if len(parameter.ParameterEnums) == 0 {
 		return items

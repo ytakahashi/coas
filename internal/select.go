@@ -4,11 +4,10 @@ import (
 	"log"
 
 	"github.com/ktr0731/go-fuzzyfinder"
-	"github.com/ytakahashi/coas/api"
 )
 
 // SelectAPI returns an api in a given array.
-func SelectAPI(apis []api.API) api.API {
+func SelectAPI(apis []API) API {
 	index, err := fuzzyfinder.Find(
 		apis,
 		func(i int) string {

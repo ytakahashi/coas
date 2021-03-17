@@ -4,17 +4,15 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/ytakahashi/coas/api"
 )
 
 // InputHandler handles user input
 type InputHandler interface {
-	readInput(parameter api.Parameter) string
+	readInput(parameter Parameter) string
 }
 
 // BuildURL builds url from an api
-func BuildURL(target api.API, handler InputHandler) string {
+func BuildURL(target API, handler InputHandler) string {
 	fmt.Println(target.ToText())
 	path := target.Path
 	for _, p := range target.GetPathParameters() {
@@ -37,12 +35,12 @@ func BuildURL(target api.API, handler InputHandler) string {
 	return url
 }
 
-func replacePathParam(path string, param api.Parameter, value string) string {
+func replacePathParam(path string, param Parameter, value string) string {
 	target := fmt.Sprintf("{%s}", param.Name)
 	return strings.Replace(path, target, value, 1)
 }
 
-func appendQueryString(query string, param api.Parameter, value string) string {
+func appendQueryString(query string, param Parameter, value string) string {
 	if value == "" {
 		return query
 	}
@@ -65,7 +63,7 @@ type PromptUI struct {
 	promptRunnerFactory PromptRunnerFactory
 }
 
-func (ui *PromptUI) readInput(parameter api.Parameter) (result string) {
+func (ui *PromptUI) readInput(parameter Parameter) (result string) {
 	prompt := ui.promptRunnerFactory.create(
 		PromptRunnerFactoryContext{
 			label:     parameter.Name,
