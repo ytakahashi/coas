@@ -46,7 +46,7 @@ func TestInputValidator_createTypeValidator_notRequired(t *testing.T) {
 	sut := new(inputValidator)
 	actual := sut.createTypeValidator("number", false)
 
-	assert.EqualError(t, actual("a"), "Invalid value")
+	assert.EqualError(t, actual("a"), "invalid value")
 	assert.Nil(t, actual("123"))
 	assert.Nil(t, actual(""))
 }
@@ -55,8 +55,8 @@ func TestInputValidator_createTypeValidator_required(t *testing.T) {
 	sut := new(inputValidator)
 	actual := sut.createTypeValidator("boolean", true)
 
-	assert.EqualError(t, actual(""), "Parameter required")
-	assert.EqualError(t, actual("a"), "Invalid value")
+	assert.EqualError(t, actual(""), "parameter required")
+	assert.EqualError(t, actual("a"), "invalid value")
 	assert.Nil(t, actual("true"))
 }
 
@@ -64,8 +64,8 @@ func TestInputValidator_createPatternValidator_notRequired(t *testing.T) {
 	sut := new(inputValidator)
 	actual := sut.createPatternValidator("^abc$", false)
 
-	assert.EqualError(t, actual("a"), "Parameter does not match a pattern `^abc$`")
-	assert.EqualError(t, actual("ac"), "Parameter does not match a pattern `^abc$`")
+	assert.EqualError(t, actual("a"), "parameter does not match a pattern `^abc$`")
+	assert.EqualError(t, actual("ac"), "parameter does not match a pattern `^abc$`")
 	assert.Nil(t, actual("abc"))
 	assert.Nil(t, actual(""))
 }
@@ -74,8 +74,8 @@ func TestInputValidator_createPatternValidator_required(t *testing.T) {
 	sut := new(inputValidator)
 	actual := sut.createPatternValidator("^0[0-9]$", true)
 
-	assert.EqualError(t, actual(""), "Parameter required")
-	assert.EqualError(t, actual("a"), "Parameter does not match a pattern `^0[0-9]$`")
-	assert.EqualError(t, actual("0"), "Parameter does not match a pattern `^0[0-9]$`")
+	assert.EqualError(t, actual(""), "parameter required")
+	assert.EqualError(t, actual("a"), "parameter does not match a pattern `^0[0-9]$`")
+	assert.EqualError(t, actual("0"), "parameter does not match a pattern `^0[0-9]$`")
 	assert.Nil(t, actual("01"))
 }

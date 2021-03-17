@@ -7,6 +7,19 @@ import (
 	"github.com/ytakahashi/coas/api"
 )
 
+func TestCreateSelectItems_notEnums(t *testing.T) {
+	parameter := api.Parameter{
+		In:            "query",
+		Name:          "sort",
+		Required:      false,
+		ParameterType: "string",
+	}
+
+	actual := createSelectItems(parameter)
+	expected := []string{}
+	assert.Equal(t, expected, actual)
+}
+
 func TestCreateSelectItems_requitedParameter(t *testing.T) {
 	parameter := api.Parameter{
 		In:             "query",

@@ -2,6 +2,7 @@ package internal
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/ytakahashi/coas/api"
@@ -50,4 +51,32 @@ func appendQueryString(query string, param api.Parameter, value string) string {
 		return q
 	}
 	return fmt.Sprintf("%s&%s", query, q)
+}
+
+type validatorFactory interface {
+	createTypeValidator(valueType string, isRequired bool) func(input string) error
+	createPatternValidator(pattern string, isRequired bool) func(input string) error
+}
+
+type inputValidator struct{}
+
+// PromptUI is ui
+type PromptUI struct {
+	promptRunnerFactory PromptRunnerFactory
+}
+
+func (ui *PromptUI) readInput(parameter api.Parameter) (result string) {
+	prompt := ui.promptRunnerFactory.create(
+		PromptRunnerFactoryContext{
+			label:     parameter.Name,
+			items:     createSelectItems(parameter),
+			validator: createValidator(parameter, new(inputValidator)),
+		},
+	)
+	result, err := prompt.Run()
+	if err != nil {
+		fmt.Printf("Failed to read input. %v\n", err)
+		os.Exit(1)
+	}
+	return
 }

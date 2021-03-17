@@ -1,44 +1,69 @@
 package internal
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/manifoldco/promptui"
-	"github.com/ytakahashi/coas/api"
 )
 
-// PromptUI is ui
-type PromptUI struct{}
-
-type validatorFactory interface {
-	createTypeValidator(valueType string, isRequired bool) func(input string) error
-	createPatternValidator(pattern string, isRequired bool) func(input string) error
+// PromptRunner is an interface of prompt
+type PromptRunner interface {
+	Run() (string, error)
 }
 
-type inputValidator struct{}
+// ItemSelector is an instance of PromptRunner to select an item
+type ItemSelector struct {
+	label string
+	items []string
+}
 
-func (ui *PromptUI) readInput(parameter api.Parameter) (result string) {
-	var err error
-	if len(parameter.ParameterEnums) > 0 {
-		prompt := promptui.Select{
-			Label:  parameter.Name,
-			Items:  createSelectItems(parameter),
-			Stdout: &bellSkipper{},
-		}
-		_, result, err = prompt.Run()
-	} else {
-		prompt := promptui.Prompt{
-			Label:    parameter.Name,
-			Validate: createValidator(parameter, new(inputValidator)),
-		}
-		result, err = prompt.Run()
+// InputValidator is an instance of PromptRunner to validate input
+type InputValidator struct {
+	label     string
+	validator func(string) error
+}
+
+func (p *ItemSelector) Run() (string, error) {
+	prompt := promptui.Select{
+		Label:  p.label,
+		Items:  p.items,
+		Stdout: &bellSkipper{},
 	}
-	if err != nil {
-		fmt.Printf("Failed to read input. %v\n", err)
-		os.Exit(1)
+	_, result, err := prompt.Run()
+	return result, err
+}
+
+func (p *InputValidator) Run() (string, error) {
+	prompt := promptui.Prompt{
+		Label:    p.label,
+		Validate: p.validator,
 	}
-	return
+	return prompt.Run()
+}
+
+type PromptRunnerFactoryContext struct {
+	label     string
+	items     []string
+	validator func(string) error
+}
+
+type IPromptRunnerFactory interface {
+	create(content PromptRunnerFactoryContext) PromptRunner
+}
+
+type PromptRunnerFactory struct{}
+
+func (f PromptRunnerFactory) create(context PromptRunnerFactoryContext) PromptRunner {
+	if len(context.items) > 0 {
+		return &ItemSelector{
+			label: context.label,
+			items: context.items,
+		}
+	}
+	return &InputValidator{
+		label:     context.label,
+		validator: context.validator,
+	}
 }
 
 // https://github.com/manifoldco/promptui/issues/49#issuecomment-573814976

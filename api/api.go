@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
+	text "github.com/MichaelMure/go-term-text"
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
@@ -57,13 +58,34 @@ func (api *API) GetQueryParameters() []Parameter {
 }
 
 func (api *API) filterParameters(target string) []Parameter {
-	result := make([]Parameter, 0, 0)
+	result := make([]Parameter, 0)
 	for _, p := range api.Parameters {
 		if p.In == target {
 			result = append(result, p)
 		}
 	}
 	return result
+}
+
+// BuildDetailedDescription builds detailed description of this api.
+func (api *API) BuildDetailedDescription(width int) string {
+	preview := fmt.Sprintf("OperationID: %s\n", api.OperationID)
+
+	if api.Description != "" {
+		description, _ := text.Wrap(api.Description, width/2-5)
+		preview += "\n" + description
+	}
+
+	if api.Parameters != nil {
+		var buffer bytes.Buffer
+		buffer.WriteString("\n\nParameters:\n")
+		for _, p := range api.Parameters {
+			buffer.WriteString(fmt.Sprintf("- %s\n", p.ToText()))
+		}
+		preview += buffer.String()
+
+	}
+	return preview
 }
 
 // ToText returns text which represents an api.
@@ -163,7 +185,7 @@ func buildParameters(params openapi3.Parameters) []Parameter {
 }
 
 func newParameter(param openapi3.Parameter) Parameter {
-	enums := make([]string, 0, 0)
+	enums := make([]string, 0)
 	for _, e := range param.Schema.Value.Enum {
 		enums = append(enums, e.(string))
 	}

@@ -17,7 +17,7 @@ func main() {
 	}
 
 	apis := api.ParsePaths(swagger.Paths)
-	selected := internal.Search(apis)
+	selected := internal.SelectAPI(apis)
 	url := internal.BuildURL(selected, new(internal.PromptUI))
 	fmt.Println(url)
 }
