@@ -1,4 +1,4 @@
-module github.com/ytakahashi/burl
+module github.com/ytakahashi/coas
 
 go 1.16
 
