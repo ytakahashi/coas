@@ -1,13 +1,13 @@
 package internal
 
-import "github.com/ytakahashi/coas/api"
-
-func createSelectItems(parameter api.Parameter) (items []string) {
+func createSelectItems(parameter Parameter) []string {
+	items := []string{}
+	if len(parameter.ParameterEnums) == 0 {
+		return items
+	}
 	if !parameter.Required {
 		items = append(items, "")
 	}
-	for _, e := range parameter.ParameterEnums {
-		items = append(items, e)
-	}
+	items = append(items, parameter.ParameterEnums...)
 	return items
 }

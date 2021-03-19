@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
-
-	"github.com/ytakahashi/coas/api"
 )
 
-func createValidator(parameter api.Parameter, factory validatorFactory) func(input string) error {
+func createValidator(parameter Parameter, factory validatorFactory) func(input string) error {
 	var validators = []func(input string) error{}
 	if parameter.ParameterType != "" {
 		typeValidator := factory.createTypeValidator(parameter.ParameterType, parameter.Required)
@@ -38,23 +36,23 @@ func (v *inputValidator) createTypeValidator(valueType string, isRequired bool) 
 	return func(input string) error {
 		if len(input) == 0 {
 			if isRequired {
-				return errors.New("Parameter required")
+				return errors.New("parameter required")
 			}
 			return nil
 		}
 		if valueType == "number" {
 			_, err := strconv.ParseFloat(input, 64)
 			if err != nil {
-				return errors.New("Invalid value")
+				return errors.New("invalid value")
 			}
 		} else if valueType == "integer" {
 			_, err := strconv.ParseInt(input, 10, 32)
 			if err != nil {
-				return errors.New("Invalid value")
+				return errors.New("invalid value")
 			}
 		} else if valueType == "boolean" {
 			if input != "true" && input != "false" {
-				return errors.New("Invalid value")
+				return errors.New("invalid value")
 			}
 		}
 		return nil
@@ -66,12 +64,12 @@ func (v *inputValidator) createPatternValidator(pattern string, isRequired bool)
 	return func(input string) error {
 		if len(input) == 0 {
 			if isRequired {
-				return errors.New("Parameter required")
+				return errors.New("parameter required")
 			}
 			return nil
 		}
 		if !re.MatchString(input) {
-			return fmt.Errorf("Parameter does not match a pattern `%s`", pattern)
+			return fmt.Errorf("parameter does not match a pattern `%s`", pattern)
 		}
 		return nil
 	}
