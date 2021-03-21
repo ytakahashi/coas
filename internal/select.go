@@ -1,8 +1,10 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 
+	text "github.com/MichaelMure/go-term-text"
 	"github.com/ktr0731/go-fuzzyfinder"
 )
 
@@ -17,10 +19,21 @@ func SelectAPI(apis []API) API {
 			if i == -1 {
 				return ""
 			}
-			return apis[i].BuildDetailedDescription(w)
+			return buildPreviewText(&apis[i], w)
 		}))
 	if err != nil {
 		log.Fatal(err)
 	}
 	return apis[index]
+}
+
+func buildPreviewText(api *API, width int) string {
+	preview := fmt.Sprintf("OperationID: %s\n", api.OperationID)
+
+	if api.Description != "" {
+		description, _ := text.Wrap(api.Description, width/2-5)
+		preview += "\n" + description
+	}
+	preview += api.PrintParameters()
+	return preview
 }

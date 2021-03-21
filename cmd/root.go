@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/spf13/cobra"
@@ -21,25 +22,37 @@ func Execute() {
 }
 
 var oasFileArgument string
+var buildURL bool
 
 func mainFunc() {
 	file := getFile()
-	swagger, err := openapi3.NewSwaggerLoader().LoadSwaggerFromFile(file)
-	if err != nil {
-		panic(err)
-	}
-
+	swagger := loadFile(file)
 	apis := internal.ParsePaths(swagger.Paths)
 	selected := internal.SelectAPI(apis)
-	url := internal.BuildURL(selected, new(internal.PromptUI))
-	fmt.Println(url)
+	if buildURL {
+		ui := &internal.PromptUI{
+			PromptRunnerFactory: internal.PromptRunnerFactory{},
+		}
+		url := internal.BuildURL(selected, ui)
+		fmt.Println(url)
+	} else {
+		result := fmt.Sprintf("OperationID: %s\n", selected.OperationID)
+		result += selected.Description
+		result += selected.PrintParameters()
+		fmt.Println(result)
+	}
 }
 
 func getFile() string {
-	if oasFileArgument == "" {
-		panic("error file")
+	if oasFileArgument != "" {
+		return oasFileArgument
 	}
-	return oasFileArgument
+	fromConf := readConfig()
+	if fromConf == "" {
+		fmt.Println("'-f' option is required if config file/option is not specified.")
+		os.Exit(1)
+	}
+	return fromConf
 }
 
 func loadFile(oasFile string) *openapi3.Swagger {
@@ -53,5 +66,8 @@ func loadFile(oasFile string) *openapi3.Swagger {
 }
 
 func init() {
+	cobra.OnInitialize(initConfig)
 	rootCommand.PersistentFlags().StringVarP(&oasFileArgument, "file", "f", "", "OAS3 file path")
+	rootCommand.PersistentFlags().StringVarP(&configFile, "config", "c", "", "config file (default: $HOME/.coas/config.yaml)")
+	rootCommand.PersistentFlags().BoolVarP(&buildURL, "build", "b", false, "if specified, builds url interactively")
 }

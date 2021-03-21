@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 
-	text "github.com/MichaelMure/go-term-text"
 	"github.com/getkin/kin-openapi/openapi3"
 )
 
@@ -67,25 +66,19 @@ func (api *API) filterParameters(target string) []Parameter {
 	return result
 }
 
-// BuildDetailedDescription builds detailed description of this api.
-func (api *API) BuildDetailedDescription(width int) string {
-	preview := fmt.Sprintf("OperationID: %s\n", api.OperationID)
-
-	if api.Description != "" {
-		description, _ := text.Wrap(api.Description, width/2-5)
-		preview += "\n" + description
-	}
-
+// PrintParameters prints parameter information
+func (api *API) PrintParameters() string {
+	parametersText := ""
 	if api.Parameters != nil {
 		var buffer bytes.Buffer
 		buffer.WriteString("\n\nParameters:\n")
 		for _, p := range api.Parameters {
 			buffer.WriteString(fmt.Sprintf("- %s\n", p.ToText()))
 		}
-		preview += buffer.String()
+		parametersText += buffer.String()
 
 	}
-	return preview
+	return parametersText
 }
 
 // ToText returns text which represents an api.
