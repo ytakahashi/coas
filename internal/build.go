@@ -60,11 +60,19 @@ type inputValidator struct{}
 
 // PromptUI is ui
 type PromptUI struct {
-	promptRunnerFactory PromptRunnerFactory
+	PromptRunnerFactory IPromptRunnerFactory
 }
 
 func (ui *PromptUI) readInput(parameter Parameter) (result string) {
-	prompt := ui.promptRunnerFactory.create(
+	var promptType PromptType
+	if len(parameter.ParameterEnums) > 0 {
+		promptType = Select
+	} else {
+		promptType = Validator
+	}
+
+	prompt := ui.PromptRunnerFactory.create(
+		promptType,
 		PromptRunnerFactoryContext{
 			label:     parameter.Name,
 			items:     createSelectItems(parameter),
