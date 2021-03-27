@@ -29,17 +29,14 @@ func mainFunc() {
 	swagger := loadFile(file)
 	apis := internal.ParsePaths(swagger.Paths)
 	selected := internal.SelectAPI(apis)
+	printer := &internal.SimplePrinter{}
+	internal.PrintAPIDetails(selected, printer)
 	if buildURL {
 		ui := &internal.PromptUI{
 			PromptRunnerFactory: internal.PromptRunnerFactory{},
 		}
 		url := internal.BuildURL(selected, ui)
-		fmt.Println(url)
-	} else {
-		result := fmt.Sprintf("OperationID: %s\n", selected.OperationID)
-		result += selected.Description
-		result += selected.PrintParameters()
-		fmt.Println(result)
+		printer.Print(url)
 	}
 }
 
