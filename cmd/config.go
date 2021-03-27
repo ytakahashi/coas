@@ -25,7 +25,6 @@ func initConfig() {
 	}
 
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 		if err := viper.Unmarshal(&config); err != nil {
 			fmt.Println(err)
 			os.Exit(1)
