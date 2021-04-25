@@ -122,12 +122,12 @@ func parseServer(s openapi3.Server) Server {
 
 		enums := []string{}
 		for _, e := range v.Enum {
-			enums = append(enums, e.(string))
+			enums = append(enums, fmt.Sprintf("%v", e))
 		}
 		variable := ServerVariable{
 			Name:        k,
 			Enum:        enums,
-			Default:     v.Default.(string),
+			Default:     fmt.Sprintf("%v", v.Default),
 			Description: v.Description,
 		}
 		variables = append(variables, variable)
